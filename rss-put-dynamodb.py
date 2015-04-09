@@ -23,10 +23,10 @@ def attach_category(org_title):
 		return 'none'
 
 
-rssurl="http://54.64.75.5/?feed=rss2"
+#rssurl="http://54.64.75.5/?feed=rss2"
 #rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_society.xml"
 #rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_nettopics.xml"
-
+#rssurl="http://feeds.feedburner.com/AmazonWebServicesBlogJp?format=xml"
 
 fd = feedparser.parse(rssurl)
 
