@@ -63,4 +63,5 @@ for i in range(3):
 		'Summary': fd.entries[i].summary,
 		'img_url': img_url,
 		'img_flag': 0,
+		's3_url': 'none'
 	},overwrite = True)
