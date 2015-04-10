@@ -11,6 +11,12 @@ from boto.dynamodb2.types import NUMBER
 from boto.dynamodb2.items import Item
 from BeautifulSoup import BeautifulSoup
 
+def fmt(num):
+   if num <= 9:
+        num_n = '0' + str(num)
+        return num_n
+   else:
+        return str(num)
 
 def attach_category(org_title):
 	chk_title = org_title.lower()
@@ -54,10 +60,12 @@ table_name = 'cic-tech-info'
 for i in range(3):
 	img_url = get_img_url(fd.entries[i].link)
 	category = attach_category(fd.entries[i].title)
+	tmp = fd.entries[i].published_parsed
+	uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
 	table = Table(table_name, connection=conn)
 	table.put_item(data={
 		'Category' : category,
-		'LastUpdateTime': fd.entries[i].published,
+		'LastUpdateTime': uptime,
 		'URL': fd.entries[i].link,
 		'Title': fd.entries[i].title,
 		'Summary': fd.entries[i].summary,
