@@ -45,31 +45,42 @@ def get_img_url(site_url):
                                         return img_url
                                         break
 
-rssurl="http://54.64.75.5/?feed=rss2"
+def get_rss(rssurl, table_name, media):
+   fd = feedparser.parse(rssurl)
+   conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
+   
+   for i in range(3):
+        img_url = get_img_url(fd.entries[i].link)
+        category = attach_category(fd.entries[i].title)
+        tmp = fd.entries[i].published_parsed
+        range_key = media + '_' +  str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
+        uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
+        table = Table(table_name, connection=conn)
+        table.put_item(data={
+                'category' : category,
+                'rangekey': range_key,
+                'UpdateTime': uptime,
+		'url': fd.entries[i].link,
+                'title': fd.entries[i].title,
+                'summary': fd.entries[i].summary,
+                'img_url': img_url,
+                'img_flag': '0',
+                's3_url': 'none',
+		'media': media
+        },overwrite = True)
+
+
+org_table_name = 'cic-tech-info'
+
+org_rssurl="http://54.64.75.5/?feed=rss2"
 #rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_society.xml"
 #rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_nettopics.xml"
 #rssurl="http://feeds.feedburner.com/AmazonWebServicesBlogJp?format=xml"
 
-fd = feedparser.parse(rssurl)
+media_name = 'wp'
+get_rss(org_rssurl, org_table_name, media_name)
 
-conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
-print conn.list_tables()
+#org_rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_society.xml"
+#media_name = 'itmedia'
+#get_rss(org_rssurl, org_table_name, media_name)
 
-table_name = 'cic-tech-info'
-
-for i in range(3):
-	img_url = get_img_url(fd.entries[i].link)
-	category = attach_category(fd.entries[i].title)
-	tmp = fd.entries[i].published_parsed
-	uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
-	table = Table(table_name, connection=conn)
-	table.put_item(data={
-		'Category' : category,
-		'LastUpdateTime': uptime,
-		'URL': fd.entries[i].link,
-		'Title': fd.entries[i].title,
-		'Summary': fd.entries[i].summary,
-		'img_url': img_url,
-		'img_flag': '0',
-		's3_url': 'none'
-	},overwrite = True)
