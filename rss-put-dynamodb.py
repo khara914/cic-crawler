@@ -47,7 +47,8 @@ def get_img_url(site_url):
 
 def get_rss(rssurl, table_name, media):
    fd = feedparser.parse(rssurl)
-   conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
+#   conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
+   conn = boto.dynamodb2.connect_to_region('us-east-1')
    
    for i in range(3):
         img_url = get_img_url(fd.entries[i].link)
