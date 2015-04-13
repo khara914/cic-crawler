@@ -47,8 +47,8 @@ def get_img_url(site_url):
 
 def get_rss(rssurl, table_name, media):
    fd = feedparser.parse(rssurl)
-#   conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
-   conn = boto.dynamodb2.connect_to_region('us-east-1')
+   conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
+#   conn = boto.dynamodb2.connect_to_region('us-east-1')
    
    for i in range(3):
         img_url = get_img_url(fd.entries[i].link)
@@ -56,14 +56,37 @@ def get_rss(rssurl, table_name, media):
         tmp = fd.entries[i].published_parsed
         range_key = media + '_' +  str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
         uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
+
+#	try:
+#	   conn.put_item(
+#		table_name,{
+#		'category' : category,
+#		'rangekey': range_key,
+#		'UpdateTime': uptime,
+#		'url': fd.entries[i].link,
+#		'title': fd.entries[i].title,
+#		'summary': fd.entries[i].summary,
+#		'img_url': img_url,
+#		'img_flag': '0',
+#		's3_url': 'none',
+#		'media': media
+#		}
+#		expected = {
+#		   'rangekey' : {"Exists" : False}
+#		}
+#	   )
+#	   return True
+#	except Exception,e:
+#	   return False
+		
         table = Table(table_name, connection=conn)
         table.put_item(data={
                 'category' : category,
                 'rangekey': range_key,
                 'UpdateTime': uptime,
 		'url': fd.entries[i].link,
-                'title': fd.entries[i].title,
-                'summary': fd.entries[i].summary,
+               'title': fd.entries[i].title,
+               'summary': fd.entries[i].summary,
                 'img_url': img_url,
                 'img_flag': '0',
                 's3_url': 'none',

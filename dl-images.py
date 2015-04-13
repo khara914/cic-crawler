@@ -25,7 +25,7 @@ table = Table(table_name, connection=conn)
 
 flag = table.query_2(index='img_flag-index', img_flag__eq='0')
 for i in flag:
-	f_name = i['LastUpdateTime'] + '.jpg'
+	f_name = i['rangekey'] + '.jpg'
 	f_path = '/root/local_images/' + f_name
 	s3_url = 'https://s3-ap-northeast-1.amazonaws.com/' + bucket_name + '/' +  f_name
 #	print f_name
