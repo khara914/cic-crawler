@@ -15,11 +15,12 @@ def download_image(dl_url,f_name):
         dl_path = '/root/local_images/' + f_name
         urllib.urlretrieve(dl_url,dl_path)
 
-conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
+#conn = boto.dynamodb2.connect_to_region('ap-northeast-1')
+conn = boto.dynamodb2.connect_to_region('us-east-1')
 conn_s3 = S3Connection()
 
 table_name = 'cic-tech-info'
-bucket_name = 'cic-tech-images'
+bucket_name = 'cic-tech-images-us-east1'
 
 table = Table(table_name, connection=conn)
 
@@ -27,10 +28,12 @@ flag = table.query_2(index='img_flag-index', img_flag__eq='0')
 for i in flag:
 	f_name = i['rangekey'] + '.jpg'
 	f_path = '/root/local_images/' + f_name
-	s3_url = 'https://s3-ap-northeast-1.amazonaws.com/' + bucket_name + '/' +  f_name
-#	print f_name
-#	print f_path
-#	print s3_url
+	s3_url = 'https://s3-us-east-1.amazonaws.com/' + bucket_name + '/' +  f_name
+	thumbnail_url = 'https://s3-us-east-1.amazonaws.com/' + bucket_name + '-thumbnail/' + 'thumbnail-' + f_name
+	print f_name
+	print f_path
+	print s3_url
+	print thumbnail_url
 	
 	download_image(i['img_url'],f_name)
 	target_bucket = conn_s3.get_bucket(bucket_name)
