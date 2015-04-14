@@ -57,46 +57,29 @@ def get_rss(rssurl, table_name, media):
         rangekey = media + '_' +  str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
         uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
 
-#	try:
-#	   conn.put_item(
-#		table_name,{
-#		'category' : category,
-#		'rangekey': rangekey,
-#		'UpdateTime': uptime,
-#		'url': fd.entries[i].link,
-#		'title': fd.entries[i].title,
-#		'summary': fd.entries[i].summary,
-#		'img_url': img_url,
-#		'img_flag': '0',
-#		's3_url': 'none',
-#		'thumbnail_url': 'none',
-#		'media': media
-#		},
-#		expected = {
-#		   'rangekey' : {"Exists" : False}
-#		}
-#	   )
-#	   return True
-#	   print 'True'
-#	except Exception,e:
-#	   return False
-#	   print 'False'
+	try:
+	   conn.put_item(
+		table_name,item={
+		'category' : {'S' : category},
+		'rangekey': {'S' : rangekey},
+		'UpdateTime': {'S' : uptime},
+		'url': {'S' : fd.entries[i].link},
+		'title': {'S' : fd.entries[i].title},
+		'summary': {'S' : fd.entries[i].summary},
+		'img_url': {'S' : img_url},
+		'img_flag': {'S' : '0'},
+		's3_url': {'S' : 'none'},
+		'thumbnail_url': {'S' : 'none'},
+		'media': {'S' : media}
+		},
+		expected = {
+		   'rangekey' : {"Exists" : False}
+		}
+	   )
+	   print 'True'
+	except Exception,e:
+	   print 'False'
 		
-        table = Table(table_name, connection=conn)
-        table.put_item(data={
-		'category' : category,
-		'rangekey': rangekey,
-		'UpdateTime': uptime,
-		'url': fd.entries[i].link,
-		'title': fd.entries[i].title,
-		'summary': fd.entries[i].summary,
-		'img_url': img_url,
-		'img_flag': '0',
-		'thumbnail_url':'none',
-		's3_url': 'none',
-		'media': media
-       },overwrite = True)
-
 
 org_table_name = 'cic-tech-info'
 
