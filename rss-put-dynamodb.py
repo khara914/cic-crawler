@@ -51,47 +51,77 @@ def get_rss(rssurl, table_name, media):
    conn = boto.dynamodb2.connect_to_region('us-east-1')
    
    for i in range(3):
-        img_url = get_img_url(fd.entries[i].link)
-        category = attach_category(fd.entries[i].title)
-        tmp = fd.entries[i].published_parsed
-        rangekey = media + '_' +  str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
-        uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
-
 	try:
-	   conn.put_item(
-		table_name,item={
-		'category' : {'S' : category},
-		'rangekey': {'S' : rangekey},
-		'UpdateTime': {'S' : uptime},
-		'url': {'S' : fd.entries[i].link},
-		'title': {'S' : fd.entries[i].title},
-		'summary': {'S' : fd.entries[i].summary},
-		'img_url': {'S' : img_url},
-		'img_flag': {'S' : '0'},
-		's3_url': {'S' : 'none'},
-		'thumbnail_url': {'S' : 'none'},
-		'media': {'S' : media}
-		},
-		expected = {
-		   'rangekey' : {"Exists" : False}
-		}
-	   )
-	   print 'True'
+		img_url = get_img_url(fd.entries[i].link)
+		category = attach_category(fd.entries[i].title)
+		tmp = fd.entries[i].published_parsed
+		rangekey = media + '_' +  str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
+		uptime = str(tmp[0]) + '-' + fmt(tmp[1]) + fmt(tmp[2]) + '-' + fmt(tmp[3]) + fmt(tmp[4]) + fmt(tmp[5])
+
+		try:
+		   conn.put_item(
+			table_name,item={
+			'category' : {'S' : category},
+			'rangekey': {'S' : rangekey},
+			'UpdateTime': {'S' : uptime},
+			'url': {'S' : fd.entries[i].link},
+			'title': {'S' : fd.entries[i].title},
+			'summary': {'S' : fd.entries[i].summary},
+			'img_url': {'S' : img_url},
+			'img_flag': {'S' : '0'},
+			's3_url': {'S' : 'none'},
+			'thumbnail_url': {'S' : 'none'},
+			'media': {'S' : media}
+			},
+			expected = {
+			   'rangekey' : {"Exists" : False}
+			}
+		   )
+		   print 'True'
+		except Exception,e:
+		   print 'False'
+
 	except Exception,e:
-	   print 'False'
-		
+	   print 'No Contents'		
 
 org_table_name = 'cic-tech-info'
 
-org_rssurl="http://54.64.75.5/?feed=rss2"
+wp_rssurl="http://54.64.75.5/?feed=rss2"
 #rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_society.xml"
 #rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_nettopics.xml"
 #rssurl="http://feeds.feedburner.com/AmazonWebServicesBlogJp?format=xml"
 
+print 'wp'
 media_name = 'wp'
-get_rss(org_rssurl, org_table_name, media_name)
+get_rss(wp_rssurl, org_table_name, media_name)
+print '\n'
 
-#org_rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_society.xml"
+#print 'itmedia'
+#itmedia_rssurl="http://rss.rssad.jp/rss/itmnews/2.0/news_society.xml"
 #media_name = 'itmedia'
-#get_rss(org_rssurl, org_table_name, media_name)
+#get_rss(itmedia_rssurl, org_table_name, media_name)
+#print '\n'
 
+##print 'asahi'
+##asahi_digital_rssurl="http://rss.asahi.com/rss/asahi/digital.rdf"
+##media_name = 'asahi'
+##get_rss(asahi_digital_rssurl, org_table_name, media_name)
+##print '\n'
+
+#print 'reuter'
+#reuter_rssurl="http://feeds.reuters.com/reuters/JPTechnologyNews?format=xml"
+#media_name = 'reuter'
+#get_rss(reuter_rssurl, org_table_name, media_name)
+#print '\n'
+
+##print 'mynavi'
+##mynavi_rssurl="http://pubsubhubbub.appspot.com"
+##media_name = 'mynavi'
+##get_rss(mynavi_rssurl, org_table_name, media_name)
+##print '\n'
+
+#print 'aws'
+#awsblog_rssurl="http://feeds.feedburner.com/AmazonWebServicesBlogJp?format=xml"
+#media_name = 'aws'
+#get_rss(awsblog_rssurl, org_table_name, media_name)
+#print '\n'

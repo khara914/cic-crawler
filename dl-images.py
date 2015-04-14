@@ -26,15 +26,16 @@ table = Table(table_name, connection=conn)
 
 flag = table.query_2(index='img_flag-index', img_flag__eq='0')
 for i in flag:
+   try:
 	f_name = i['rangekey'] + '.jpg'
 	f_path = '/root/local_images/' + f_name
 	s3_url = 'https://s3-ap-northeast-1.amazonaws.com/' + bucket_name + '/' +  f_name
 	s3_url = 'https://s3.amazonaws.com/' + bucket_name + '/' +  f_name
 	thumbnail_url = 'https://s3.amazonaws.com/' + bucket_name + '-thumbnail/' + 'thumbnail-' + f_name
-	print f_name
-	print f_path
-	print s3_url
-	print thumbnail_url
+#	print f_name
+#	print f_path
+#	print s3_url
+#	print thumbnail_url
 	
 	download_image(i['img_url'],f_name)
 	target_bucket = conn_s3.get_bucket(bucket_name)
@@ -45,6 +46,8 @@ for i in flag:
 	i['s3_url'] = s3_url
 	i['thumbnail_url'] = thumbnail_url
 	i.partial_save()
+	print 'True'
 
-
+   except Exception,e:
+	print 'False'
 
