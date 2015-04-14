@@ -28,8 +28,9 @@ flag = table.query_2(index='img_flag-index', img_flag__eq='0')
 for i in flag:
 	f_name = i['rangekey'] + '.jpg'
 	f_path = '/root/local_images/' + f_name
-	s3_url = 'https://s3-us-east-1.amazonaws.com/' + bucket_name + '/' +  f_name
-	thumbnail_url = 'https://s3-us-east-1.amazonaws.com/' + bucket_name + '-thumbnail/' + 'thumbnail-' + f_name
+	s3_url = 'https://s3-ap-northeast-1.amazonaws.com/' + bucket_name + '/' +  f_name
+	s3_url = 'https://s3.amazonaws.com/' + bucket_name + '/' +  f_name
+	thumbnail_url = 'https://s3.amazonaws.com/' + bucket_name + '-thumbnail/' + 'thumbnail-' + f_name
 	print f_name
 	print f_path
 	print s3_url
@@ -42,6 +43,7 @@ for i in flag:
 	file.set_contents_from_filename(f_path)
 	i['img_flag'] = '1'
 	i['s3_url'] = s3_url
+	i['thumbnail_url'] = thumbnail_url
 	i.partial_save()
 
 
