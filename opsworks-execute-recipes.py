@@ -9,7 +9,7 @@ deploymentCommand = {
    'Name': '%s' % command
 }
 deploymentCommand['Name'] = 'execute_recipes'
-deploymentCommand['Args'] = {"recipes":["git::pull"]}
+deploymentCommand['Args'] = {"recipes":["git::sync_crawler"]}
 
 # get stackId
 desc_stacks = opsworks.describe_stacks()
